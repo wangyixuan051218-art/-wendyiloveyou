@@ -1,1 +1,647 @@
-html,body,#app{width:100%;height:100%;margin:0}body{background:#101014;overflow:hidden}canvas{display:block}.birthday-text{color:#fff0c8;letter-spacing:0;opacity:0;pointer-events:none;text-shadow:0 0 18px #ffac5cd9;font-family:Microsoft YaHei,sans-serif;font-size:clamp(40px,8vw,96px);font-weight:700;position:fixed;top:18%;left:50%;transform:translate(-50%,-12px)}.birthday-text.is-visible{opacity:1;transform:translate(-50%)}.birthday-message{color:#fff2c7;letter-spacing:0;opacity:0;pointer-events:none;text-align:center;text-shadow:0 0 18px #ffc266e6,0 0 42px #ff78a08c;white-space:nowrap;font-family:Microsoft YaHei,sans-serif;font-size:clamp(38px,7vw,88px);font-weight:800;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)}.wish-message{color:#ffd76a;letter-spacing:0;opacity:0;pointer-events:none;text-align:center;text-shadow:0 0 16px #ffd76ae6,0 0 42px #ffb242a6,0 0 80px #fff5be73;white-space:nowrap;font-family:Microsoft YaHei,sans-serif;font-size:clamp(48px,8vw,108px);font-weight:800;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%)}.intro-card{z-index:10;color:#fff8df;background:#000;place-items:center;font-family:Microsoft YaHei,sans-serif;display:grid;position:fixed;inset:0}.intro-card__content{text-align:center;justify-items:center;gap:18px;padding:32px;display:grid}.intro-card__title{letter-spacing:0;text-shadow:0 0 28px #ffd28261;font-size:clamp(30px,5vw,68px);font-weight:800}.intro-card__subtitle{color:#ffd76a;letter-spacing:0;text-shadow:0 0 22px #ffbe508c;font-size:clamp(18px,2.6vw,34px);font-weight:600}.intro-card__hint{color:#ffffffc7;letter-spacing:0;font-size:clamp(14px,1.8vw,20px);font-weight:600}.intro-card__button{color:#ffe8a3;font:inherit;letter-spacing:0;cursor:pointer;background:#ffd76a1f;border:1px solid #ffd76ab8;border-radius:999px;margin-top:14px;padding:14px 28px;font-size:18px;font-weight:700;box-shadow:0 0 28px #ffbe5047}.intro-card__button:disabled{cursor:default}.gift-prompt{color:#fff2c7;letter-spacing:0;opacity:0;pointer-events:none;text-shadow:0 0 22px #ffbe50bf;font-family:Microsoft YaHei,sans-serif;font-size:clamp(20px,3vw,34px);font-weight:800;position:fixed;bottom:12%;left:50%;transform:translate(-50%,12px)}.blessing-card{z-index:8;color:#fff7df;opacity:0;pointer-events:none;text-align:center;background:#140e12db;border:1px solid #ffd782b8;border-radius:18px;width:min(520px,100vw - 40px);padding:28px;font-family:Microsoft YaHei,sans-serif;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 34px #ffba5d4d,inset 0 0 24px #ffe6aa14}.blessing-card__title{color:#ffd76a;letter-spacing:0;margin-bottom:14px;font-size:30px;font-weight:900}.blessing-card__body{font-size:18px;line-height:1.6}.gesture-hint{z-index:7;color:#fff;letter-spacing:0;opacity:1;pointer-events:none;text-shadow:0 0 12px,0 0 26px #ffffff40;will-change:opacity, transform;background:#0c0a0e9e;border:1px solid #ffffff2e;border-radius:14px;max-width:min(360px,100vw - 48px);padding:12px 16px;font-family:Microsoft YaHei,sans-serif;font-size:clamp(14px,2vw,18px);font-weight:700;position:fixed;bottom:24px;left:24px;box-shadow:0 0 28px #ffd76a1f,inset 0 0 18px #ffffff0a}
+ <!doctype html>
+  <html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday Wendy</title>
+    <style>
+      html, body, #app {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #101014;
+        font-family: "Microsoft YaHei", Arial, sans-serif;
+      }
+
+      canvas {
+        display: block;
+      }
+
+      .intro {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        display: grid;
+        place-items: center;
+        background: #000;
+        color: #fff8df;
+        text-align: center;
+      }
+
+      .intro h1 {
+        margin: 0 0 18px;
+        font-size: clamp(36px, 7vw, 92px);
+        text-shadow: 0 0 28px rgba(255, 190, 100, 0.45);
+      }
+
+      .intro p {
+        margin: 10px 0;
+        color: #ffd76a;
+        font-size: clamp(18px, 3vw, 34px);
+        font-weight: 700;
+      }
+
+      .intro small {
+        display: block;
+        margin: 12px 0 28px;
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 16px;
+      }
+
+      .intro button {
+        border: 1px solid rgba(255, 215, 106, 0.75);
+        border-radius: 999px;
+        padding: 14px 30px;
+        background: rgba(255, 215, 106, 0.14);
+        color: #ffe8a3;
+        font: inherit;
+        font-size: 18px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 0 28px rgba(255, 190, 80, 0.28);
+      }
+
+      .hint {
+        position: fixed;
+        left: 24px;
+        bottom: 24px;
+        z-index: 5;
+        max-width: min(360px, calc(100vw - 48px));
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 14px;
+        padding: 12px 16px;
+        background: rgba(12, 10, 14, 0.62);
+        color: #fff;
+        font-size: clamp(14px, 2vw, 18px);
+        font-weight: 800;
+        opacity: 0;
+        pointer-events: none;
+        text-shadow: 0 0 14px currentColor;
+      }
+
+      .message {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        z-index: 6;
+        transform: translate(-50%, -50%);
+        color: #ffd76a;
+        font-size: clamp(46px, 8vw, 108px);
+        font-weight: 900;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        text-shadow:
+          0 0 18px rgba(255, 215, 106, 0.95),
+          0 0 56px rgba(255, 120, 160, 0.72);
+      }
+
+      .end {
+        position: fixed;
+        left: 50%;
+        bottom: 12%;
+        z-index: 6;
+        transform: translate(-50%, 16px);
+        color: #fff2c7;
+        font-size: clamp(26px, 4vw, 48px);
+        font-weight: 900;
+        opacity: 0;
+        pointer-events: none;
+        text-shadow: 0 0 24px rgba(255, 190, 80, 0.85);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <div class="intro" id="intro">
+      <div>
+        <h1>Today is a special day...</h1>
+        <p>Make a wish for Wendy</p>
+        <small>Raise your hand in front of camera</small>
+        <button id="enter">Enter Celebration</button>
+      </div>
+    </div>
+
+    <div class="hint" id="hint">Show your hand</div>
+    <div class="message" id="message">Happy Birthday Wendy</div>
+    <div class="end" id="end">I love you</div>
+ <script type="module">
+      import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+      import { gsap } from 'https://cdn.jsdelivr.net/npm/gsap@3.12.5/index.js';
+
+      const app = document.querySelector('#app');
+      const intro = document.querySelector('#intro');
+      const hint = document.querySelector('#hint');
+      const message = document.querySelector('#message');
+      const end = document.querySelector('#end');
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x101014);
+
+      const camera = new THREE.PerspectiveCamera(
+        55,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+      );
+      camera.position.set(0, 1.7, 5.2);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      app.appendChild(renderer.domElement);
+
+      scene.add(new THREE.AmbientLight(0xffe7d6, 1.2));
+
+      const pointLight = new THREE.PointLight(0xffd1a8, 2.2, 12);
+      pointLight.position.set(2.8, 4, 3);
+      pointLight.castShadow = true;
+      scene.add(pointLight);
+
+      const hemiLight = new THREE.HemisphereLight(0xffe7cf, 0x241824, 1.1);
+      scene.add(hemiLight);
+
+      const floor = new THREE.Mesh(
+        new THREE.CircleGeometry(3, 96),
+        new THREE.ShadowMaterial({
+          opacity: 0.26,
+          color: 0x27151d
+        })
+      );
+      floor.rotation.x = -Math.PI / 2;
+      floor.position.y = -0.03;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      const cake = new THREE.Group();
+      scene.add(cake);
+
+      const creamMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0xffd7df,
+        roughness: 0.82,
+        sheen: 0.5,
+        emissive: 0xffcad6,
+        emissiveIntensity: 0.06
+      });
+
+      const spongeMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0xf0a3b6,
+        roughness: 0.76,
+        sheen: 0.25
+      });
+
+      function createOrganicCylinder(radius, height, y, material) {
+        const geometry = new THREE.CylinderGeometry(
+          radius,
+          radius * 1.015,
+          height,
+          96,
+          8
+        );
+
+        const position = geometry.attributes.position;
+
+        for (let index = 0; index < position.count; index += 1) {
+          const x = position.getX(index);
+          const z = position.getZ(index);
+          const radial = Math.hypot(x, z);
+          const noise =
+            (Math.sin(index * 1.9) + Math.sin(index * 0.63)) *
+            0.01 *
+            radius;
+
+          const scale = radial ? (radial + noise) / radial : 1;
+
+          position.setXYZ(
+            index,
+            x * scale,
+            position.getY(index) + noise * 0.12,
+            z * scale
+          );
+        }
+
+        geometry.computeVertexNormals();
+
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.y = y;
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+
+        return mesh;
+      }
+
+      function createCakeLayer(radius, height, y, tilt) {
+        const layer = new THREE.Group();
+        layer.rotation.z = tilt;
+
+        const sponge = createOrganicCylinder(radius, height, y, spongeMaterial);
+        const cream = createOrganicCylinder(
+          radius * 1.04,
+          height * 0.2,
+          y + height * 0.6,
+          creamMaterial
+        );
+
+        layer.add(sponge, cream);
+        cake.add(layer);
+      }
+
+      createCakeLayer(1.45, 0.48, 0.24, -0.02);
+      createCakeLayer(1.08, 0.42, 0.75, 0.018);
+      createCakeLayer(0.72, 0.36, 1.2, -0.014);
+ const flameMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffc55a,
+        emissive: 0xff7a18,
+        emissiveIntensity: 1.9
+      });
+
+      const candleMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffd8e5,
+        roughness: 0.62
+      });
+
+      const flames = [];
+
+      for (let index = 0; index < 5; index += 1) {
+        const angle = (index / 5) * Math.PI * 2;
+
+        const candle = new THREE.Group();
+        candle.position.set(
+          Math.cos(angle) * 0.36,
+          1.78,
+          Math.sin(angle) * 0.36
+        );
+
+        const body = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.028, 0.032, 0.82, 24),
+          candleMaterial
+        );
+        body.position.y = 0.41;
+        body.castShadow = true;
+        candle.add(body);
+
+        const wick = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.006, 0.006, 0.09, 8),
+          new THREE.MeshStandardMaterial({
+            color: 0x2b1b12,
+            roughness: 0.7
+          })
+        );
+        wick.position.y = 0.86;
+        candle.add(wick);
+
+        const flame = new THREE.Mesh(
+          new THREE.SphereGeometry(0.075, 18, 18),
+          flameMaterial
+        );
+        flame.name = `flame_${index + 1}`;
+        flame.position.y = 0.99;
+        flame.scale.set(0.55, 1.4, 0.55);
+        candle.add(flame);
+
+        const glow = new THREE.PointLight(0xffa24a, 0.32, 1.4);
+        glow.position.y = 0.96;
+        candle.add(glow);
+
+        flames.push(flame);
+        cake.add(candle);
+      }
+
+      const gift = new THREE.Group();
+      gift.visible = false;
+
+      const giftBoxMaterial = new THREE.MeshStandardMaterial({
+        color: 0xc7335a,
+        roughness: 0.55
+      });
+
+      const ribbonMaterial = new THREE.MeshStandardMaterial({
+        color: 0xffc15a,
+        roughness: 0.32,
+        metalness: 0.45
+      });
+
+      const giftBody = new THREE.Mesh(
+        new THREE.BoxGeometry(0.72, 0.55, 0.72),
+        giftBoxMaterial
+      );
+      giftBody.castShadow = true;
+      giftBody.receiveShadow = true;
+      gift.add(giftBody);
+
+      const ribbonVertical = new THREE.Mesh(
+        new THREE.BoxGeometry(0.12, 0.59, 0.76),
+        ribbonMaterial
+      );
+      ribbonVertical.castShadow = true;
+      gift.add(ribbonVertical);
+
+      const ribbonHorizontal = new THREE.Mesh(
+        new THREE.BoxGeometry(0.76, 0.59, 0.12),
+        ribbonMaterial
+      );
+      ribbonHorizontal.castShadow = true;
+      gift.add(ribbonHorizontal);
+
+      gift.position.set(1.6, 8, 0.1);
+      scene.add(gift);
+
+      const particleCount = 1200;
+      const particlePositions = new Float32Array(particleCount * 3);
+
+      for (let index = 0; index < particlePositions.length; index += 3) {
+        particlePositions[index] = (Math.random() - 0.5) * 8;
+        particlePositions[index + 1] = Math.random() * 5;
+        particlePositions[index + 2] = (Math.random() - 0.5) * 5;
+      }
+
+      const particleGeometry = new THREE.BufferGeometry();
+      particleGeometry.setAttribute(
+        'position',
+        new THREE.BufferAttribute(particlePositions, 3)
+      );
+
+      const backgroundParticles = new THREE.Points(
+        particleGeometry,
+        new THREE.PointsMaterial({
+          color: 0xffc58a,
+          size: 0.025,
+          transparent: true,
+          opacity: 0.75
+        })
+      );
+
+      scene.add(backgroundParticles);
+  let finished = false;
+
+      function showHint(text, color = '#ffffff') {
+        hint.textContent = text;
+        hint.style.color = color;
+
+        gsap.to(hint, {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+      }
+
+      function blowOutCandles() {
+        if (finished) {
+          return;
+        }
+
+        finished = true;
+        showHint('Enjoy the celebration', '#ffd76a');
+
+        flames.forEach((flame) => {
+          gsap.to(flame.scale, {
+            x: 0,
+            y: 0,
+            z: 0,
+            duration: 0.35,
+            ease: 'power2.out',
+            onComplete: () => {
+              flame.visible = false;
+            }
+          });
+        });
+
+        gsap.to(pointLight, {
+          intensity: 3.5,
+          duration: 2,
+          ease: 'power2.out'
+        });
+
+        gsap.to(scene.background, {
+          r: 1,
+          g: 0.72,
+          b: 0.48,
+          duration: 2,
+          ease: 'power2.out'
+        });
+
+        setTimeout(startFireworks, 500);
+      }
+
+      function createFirework() {
+        const geometry = new THREE.BufferGeometry();
+        const positions = [];
+        const velocities = [];
+
+        const originX = (Math.random() - 0.5) * 4;
+        const originY = 3 + Math.random() * 2;
+        const originZ = (Math.random() - 0.5) * 2;
+
+        for (let index = 0; index < 120; index += 1) {
+          positions.push(originX, originY, originZ);
+
+          velocities.push(
+            (Math.random() - 0.5) * 0.08,
+            Math.random() * 0.08,
+            (Math.random() - 0.5) * 0.08
+          );
+        }
+
+        geometry.setAttribute(
+          'position',
+          new THREE.Float32BufferAttribute(positions, 3)
+        );
+
+        const material = new THREE.PointsMaterial({
+          color: Math.random() > 0.5 ? 0xff9fc0 : 0xffd76a,
+          size: 0.045,
+          transparent: true,
+          opacity: 1
+        });
+
+        const points = new THREE.Points(geometry, material);
+        points.userData.velocities = velocities;
+        scene.add(points);
+
+        gsap.to(material, {
+          opacity: 0,
+          duration: 1.4,
+          ease: 'power2.out',
+          onComplete: () => {
+            scene.remove(points);
+            geometry.dispose();
+            material.dispose();
+          }
+        });
+
+        return points;
+      }
+
+      const activeFireworks = [];
+
+      function startFireworks() {
+        for (let index = 0; index < 5; index += 1) {
+          setTimeout(() => {
+            activeFireworks.push(createFirework());
+          }, 500 + index * 700);
+        }
+
+        setTimeout(showBirthdayMessage, 4700);
+      }
+
+      function showBirthdayMessage() {
+        gsap.to(message, {
+          opacity: 1,
+          scale: 1.05,
+          duration: 2,
+          ease: 'power2.out'
+        });
+
+        setTimeout(dropGift, 2200);
+      }
+
+      function dropGift() {
+        gift.visible = true;
+
+        gsap.to(gift.position, {
+          y: 0,
+          duration: 1.4,
+          ease: 'bounce.out',
+          onComplete: () => {
+            gsap.to(end, {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              ease: 'power2.out'
+            });
+          }
+        });
+      }
+
+      async function startMicrophone() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          return;
+        }
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            audio: true
+          });
+
+          const audioContext = new AudioContext();
+          const analyser = audioContext.createAnalyser();
+          const source = audioContext.createMediaStreamSource(stream);
+          const data = new Uint8Array(1024);
+
+          source.connect(analyser);
+
+          function detectBlow() {
+            analyser.getByteTimeDomainData(data);
+
+            let peak = 0;
+
+            for (const value of data) {
+              peak = Math.max(peak, Math.abs(value - 128));
+            }
+
+            if (peak > 18) {
+              stream.getTracks().forEach((track) => track.stop());
+              audioContext.close();
+              blowOutCandles();
+              return;
+            }
+
+            if (!finished) {
+              requestAnimationFrame(detectBlow);
+            }
+          }
+
+          detectBlow();
+        } catch (error) {
+          console.warn('Microphone unavailable:', error);
+        }
+      }
+ document.querySelector('#enter').addEventListener('click', () => {
+        gsap.to(intro, {
+          opacity: 0,
+          duration: 0.7,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            intro.remove();
+          }
+        });
+
+        showHint('Show your hand');
+        startMicrophone();
+      });
+
+      window.addEventListener('keydown', (event) => {
+        if (event.code === 'Space') {
+          blowOutCandles();
+        }
+      });
+
+      window.addEventListener('click', () => {
+        if (!intro.isConnected && !finished) {
+          blowOutCandles();
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      function updateFireworks() {
+        for (const firework of activeFireworks) {
+          const position = firework.geometry.attributes.position;
+          const velocities = firework.userData.velocities;
+
+          for (let index = 0; index < position.count; index += 1) {
+            position.setX(
+              index,
+              position.getX(index) + velocities[index * 3]
+            );
+            position.setY(
+              index,
+              position.getY(index) + velocities[index * 3 + 1]
+            );
+            position.setZ(
+              index,
+              position.getZ(index) + velocities[index * 3 + 2]
+            );
+
+            velocities[index * 3 + 1] -= 0.0015;
+          }
+
+          position.needsUpdate = true;
+        }
+      }
+
+      function animate(time) {
+        requestAnimationFrame(animate);
+
+        cake.position.y = Math.sin(time * 0.0012) * 0.045;
+        cake.rotation.y = Math.sin(time * 0.0009) * 0.045;
+
+        flames.forEach((flame, index) => {
+          if (!flame.visible) {
+            return;
+          }
+
+          const scale = 1 + Math.sin(time * 0.008 + index) * 0.12;
+          flame.scale.set(0.55 * scale, 1.4 * scale, 0.55 * scale);
+        });
+
+        backgroundParticles.rotation.y += 0.0004;
+
+        updateFireworks();
+        camera.lookAt(0, 0.95, 0);
+        renderer.render(scene, camera);
+      }
+
+      animate(0);
+    </script>
+  </body>
+  </html>
